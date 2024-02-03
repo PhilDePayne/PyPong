@@ -25,15 +25,15 @@ def threaded_client(conn, player):
     conn.send(pickle.dumps(players[player]))
     while True:
         try:
-            ball.move()
             data = pickle.loads(conn.recv(2048))
             players[player] = data
-            reply = [ball]
 
             if not data:
                 print("Disconnected")
                 break
             else:
+                ball.move(players[player])
+                reply = [ball]
                 if player == 1:
                     reply.append(players[0])
                 else:
