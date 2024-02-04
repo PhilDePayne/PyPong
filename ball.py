@@ -84,7 +84,8 @@ class Ball:
                     self.vX = random.random()
                 elif player.direction == "RIGHT":
                     self.vX = -random.random()
-                print(separation)
+                
+                return True
             
             else:
                 print("Case 2")
@@ -101,10 +102,19 @@ class Ball:
                     self.vX = random.random()
                 elif player.direction == "RIGHT":
                     self.vX = -random.random()
+                    
+                return True
 				   
+        return False
                 
     def move(self, player):
+        
         self.x += self.vX
         self.y += self.vY
-        self.resolve_collision(player)
+        
+        if not self.resolve_collision(player):
+            if self.x <= (0 + self.r) or self.x >= (500 + self.r): #TODO: magic numbers, window size in const file
+                self.vX = -self.vX
+                
+            
         print(self.y)
