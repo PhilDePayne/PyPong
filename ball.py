@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+import random
 
 class Ball:
     def __init__(self, x, y, r, vX, vY, color):
@@ -77,6 +78,12 @@ class Ball:
                     
                 self.x += separation[0]
                 self.y += separation[1]
+                
+                self.vY = -self.vY
+                if player.direction == "LEFT":
+                    self.vX = random.random()
+                elif player.direction == "RIGHT":
+                    self.vX = -random.random()
                 print(separation)
             
             else:
@@ -88,8 +95,12 @@ class Ball:
                 separation[1] = (self.y - center[1]) / denom
                 self.x += separation[0]/4
                 self.y += separation[1]/4
+                
                 self.vY = -self.vY
-                print(separation)
+                if player.direction == "LEFT":
+                    self.vX = random.random()
+                elif player.direction == "RIGHT":
+                    self.vX = -random.random()
 				   
                 
     def move(self, player):
