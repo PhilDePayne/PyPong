@@ -3,29 +3,24 @@ from _thread import *
 from player import Player
 from ball import Ball
 import pickle
+from multiprocessing.connection import Listener
 
-server = "192.168.0.14"
+server = "localhost"
 port = 5555
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_sock = Listener((server, port))
 
-try:
-    s.bind((server, port))
-except socket.error as e:
-    str(e)
-
-s.listen(2)
 print("Waiting for a connection, Server Started")
 
 
 players = [Player(225,0,50,50,(255,0,0)), Player(225,450, 50,50, (0,0,255))]
-ball = Ball(250, 250, 5, (0, 255, 0))
+ball = Ball(250, 250, 15, 0, -0.5, (0, 255, 0))
 
 def threaded_client(conn, player):
     conn.send(pickle.dumps(players[player]))
     while True:
         try:
-            data = pickle.loads(conn.recv(2048))
+            data = pickle.loads(conn.recv())
             players[player] = data
 
             if not data:
@@ -39,21 +34,16 @@ def threaded_client(conn, player):
                 else:
                     reply.append(players[1])
 
-                print("Received: ", data)
-                print("Sending : ", reply)
-
-            conn.sendall(pickle.dumps(reply))
+            conn.send(pickle.dumps(reply))
             
         except:
             break
-
     print("Lost connection")
     conn.close()
 
 currentPlayer = 0
 while True:
-    conn, addr = s.accept()
-    print("Connected to:", addr)
+    conn = server_sock.accept()
 
     start_new_thread(threaded_client, (conn, currentPlayer))
     currentPlayer += 1
