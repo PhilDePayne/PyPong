@@ -91,7 +91,7 @@ class Ball:
                 self.x += separation[0]/4
                 self.y += separation[1]/4
                 
-                self.vY = -self.vY
+                self.vY = -self.vY #TODO: change if y > player.y
 
                 if self.y < player.getBottom():
                     print(1)
@@ -118,6 +118,7 @@ class Ball:
 
         self.x += self.vX
         self.y += self.vY
-        
-        
+
+        if self.y < (0 - self.r) or self.y > (500 + self.r): #TODO: magic numbers, window size in const file
+            print("POINT")        
                 
