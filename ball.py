@@ -36,18 +36,13 @@ class Ball:
     
     def resolve_collision(self, player):
         if self.detect_collision(player):
-            print("colliding")
             
             separation = [0,0]
             closest = (np.clip(self.x, player.getLeft(), player.getRight()), 
                        np.clip(self.y, player.getTop(), player.getBottom()),
                        0)
             
-            print("Closest = ")
-            print(closest)
-            
             if self.x == closest[0] and self.y == closest[1]:
-                print("Case 1")
             
                 left = self.x - player.getLeft() + self.r
                 right = player.getRight() - self.x + self.r
@@ -56,41 +51,40 @@ class Ball:
                 bottom = player.getBottom() - self.y + self.r
                 
                 if left < right:
-                    print("left")
                     separation[0] = -left
                 else: 
-                    print("right")
                     separation[0] = right
                     
                 if top < bottom:
-                    print("top")
                     separation[1] = -top
                 else:
-                    print("bottom")
                     separation[1] = bottom
                     
                 print(separation)
                     
                 if abs(separation[0]) < abs(separation[1]):
                     separation[1] = 0
+                    if player.direction == "LEFT":
+                        self.vX = -random.random() + 3.2
+                    elif player.direction == "RIGHT":
+                        self.vX = random.random() + 3.2
+
                 if abs(separation[0]) > abs(separation[1]):
                     separation[0] = 0
+                    if player.direction == "LEFT":
+                        self.vX = random.random() + 3.2
+                    elif player.direction == "RIGHT":
+                        self.vX = -random.random() + 3.2
                     
                 self.x += separation[0]
                 self.y += separation[1]
                 
                 self.vY = -self.vY
-                if player.direction == "LEFT":
-                    self.vX = random.random()
-                elif player.direction == "RIGHT":
-                    self.vX = -random.random()
                 
                 return True
             
             else:
-                print("Case 2")
                 denom = np.linalg.norm(np.array((self.x, self.y, 0)) - np.array(closest)) * (self.r - np.linalg.norm(np.array((self.x, self.y, 0)) - np.array(closest)))
-                print("Step 2")
                 center = player.getCenter()
                 separation[0] = (self.x - center[0]) / denom
                 separation[1] = (self.y - center[1]) / denom
@@ -98,10 +92,19 @@ class Ball:
                 self.y += separation[1]/4
                 
                 self.vY = -self.vY
-                if player.direction == "LEFT":
-                    self.vX = random.random()
-                elif player.direction == "RIGHT":
-                    self.vX = -random.random()
+
+                if self.y < player.getBottom():
+                    print(1)
+                    print(player.direction)
+                    if player.direction == "LEFT":
+                        self.vX = -random.random() - 3.2
+                    elif player.direction == "RIGHT":
+                        self.vX = random.random() + 3.2
+                else:
+                    if player.direction == "LEFT":
+                        self.vX = random.random() + 3.2
+                    elif player.direction == "RIGHT":
+                        self.vX = -random.random() - 3.2
                     
                 return True
 				   
@@ -109,12 +112,12 @@ class Ball:
                 
     def move(self, player):
         
+        if not self.resolve_collision(player):
+            if self.x <= (0 + self.r) or self.x >= (500 - self.r): #TODO: magic numbers, window size in const file
+                self.vX = -self.vX
+
         self.x += self.vX
         self.y += self.vY
         
-        if not self.resolve_collision(player):
-            if self.x <= (0 + self.r) or self.x >= (500 + self.r): #TODO: magic numbers, window size in const file
-                self.vX = -self.vX
+        
                 
-            
-        print(self.y)
