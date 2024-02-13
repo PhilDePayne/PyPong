@@ -2,12 +2,15 @@ import pygame
 from network import Network
 from player import Player
 from ball import Ball
+from button import Button
+
+pygame.init()
 
 width = 500
 height = 500
 win = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Client")
-
+screen = pygame.display.set_caption("Client")
+quitButton = Button(win)
 
 def redrawWindow(win,player, player2, ball):
     win.fill((255,255,255))
@@ -36,6 +39,6 @@ def main():
             p.move()
             redrawWindow(win, p, p2, ball)
         else:
-            pygame.quit()
+            quitButton.Update()
 
 main()  
