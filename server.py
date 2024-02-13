@@ -27,7 +27,9 @@ def threaded_client(conn, player):
                 print("Disconnected")
                 break
             else:
-                ball.move(players[player])
+                if currentPlayer == 2:
+                    ball.move(players[player])
+                    
                 reply = [ball]
                 if player == 1:
                     reply.append(players[0])
