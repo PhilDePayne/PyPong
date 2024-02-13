@@ -119,6 +119,10 @@ class Ball:
         self.x += self.vX
         self.y += self.vY
 
-        if self.y < (0 - self.r) or self.y > (500 + self.r): #TODO: magic numbers, window size in const file
-            print("POINT")        
+        if self.y < (0 - self.r): #TODO: magic numbers, window size in const file
+            return 1
+        elif self.y > (500 + self.r): #TODO: magic numbers, window size in const file    
+            return 2
+        else:
+            return 0
                 

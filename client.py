@@ -25,14 +25,17 @@ def main():
 
     while run:
         clock.tick(60)
-        ball, p2 = n.send(p)
+        ball, p2, result = n.send(p)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
 
-        p.move()
-        redrawWindow(win, p, p2, ball)
+        if result == 0:
+            p.move()
+            redrawWindow(win, p, p2, ball)
+        else:
+            pygame.quit()
 
 main()  

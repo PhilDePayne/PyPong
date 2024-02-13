@@ -12,23 +12,41 @@ server_sock = Listener((server, port))
 
 print("Waiting for a connection, Server Started")
 
-
 players = [Player(225,0,50,50,(255,0,0)), Player(225,450, 50,50, (0,0,255))]
 ball = Ball(250, 250, 15, 0, -0.5, (0, 255, 0))
+currentPlayer = 0
+result = 0
+
+def reset():
+    print("Reset")
+    global currentPlayer
+    global players
+    global ball
+    global result
+
+    currentPlayer = 0
+    players = [Player(225,0,50,50,(255,0,0)), Player(225,450, 50,50, (0,0,255))]
+    ball = Ball(250, 250, 15, 0, -0.5, (0, 255, 0))
+    result = 0
 
 def threaded_client(conn, player):
+    global currentPlayer
+    global result
     conn.send(pickle.dumps(players[player]))
+
     while True:
         try:
             data = pickle.loads(conn.recv())
             players[player] = data
+            result = 0
 
             if not data:
                 print("Disconnected")
+                
                 break
             else:
                 if currentPlayer == 2:
-                    ball.move(players[player])
+                    result = ball.move(players[player])
                     
                 reply = [ball]
                 if player == 1:
@@ -36,15 +54,22 @@ def threaded_client(conn, player):
                 else:
                     reply.append(players[1])
 
+                reply.append(result)                    
+
             conn.send(pickle.dumps(reply))
             
         except:
             break
+
     print("Lost connection")
+    currentPlayer -= 1
+    if currentPlayer == 0:
+        reset()
+
     conn.close()
 
-currentPlayer = 0
 while True:
+    #if currentPlayer < 3:
     conn = server_sock.accept()
 
     start_new_thread(threaded_client, (conn, currentPlayer))
