@@ -16,16 +16,18 @@ def restart():
 def connect():
     global n
     global p
+    global result
     print("Reconnect")
     n = Network()
     p = n.getP()
+    result = 0
 
 width = 500
 height = 500
 win = pygame.display.set_mode((width, height))
 screen = pygame.display.set_caption("Client")
-quitButton = Button(win, quit, 200, 200, 140, 50)
-replayButton = Button(win, restart, 200, 300, 140, 50)
+quitButton = Button(win, quit, 180, 200, 140, 50, 'Quit')
+replayButton = Button(win, restart, 180, 300, 140, 50, 'Restart')
 
 n = None
 
@@ -43,13 +45,17 @@ def main():
     global p
     p = n.getP()
     clock = pygame.time.Clock()
+    global result
 
     while run:
         clock.tick(60)
         if n != None:
             ball, p2, result = n.send(p)
+            print(ball)
 
-        for event in pygame.event.get():
+        eventList = pygame.event.get()
+
+        for event in eventList:
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
@@ -58,8 +64,8 @@ def main():
             p.move()
             redrawWindow(win, p, p2, ball)
         else:
-            quitButton.Update()
-            replayButton.Update()
+            quitButton.Update(eventList)
+            replayButton.Update(eventList)
             n = None
             
 

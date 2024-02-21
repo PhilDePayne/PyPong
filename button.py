@@ -2,12 +2,12 @@ import pygame
 import sys
 
 class Button:  
-    def __init__(self, screen, onClickFunc, x, y , w, h):
+    def __init__(self, screen, onClickFunc, x, y , w, h, label):
         self.color_text = (255,255,255) 
         self.color_hovered = (170,170,170) 
         self.color = (100,100,100)
         self.smallfont = pygame.font.SysFont('Corbel',35)
-        self.text = self.smallfont.render('quit' , True , self.color_text) 
+        self.text = self.smallfont.render(label , True , self.color_text) 
         self.screen = screen
         self.OnClick = onClickFunc
         self.x = x 
@@ -15,9 +15,13 @@ class Button:
         self.w = w
         self.h = h
 
-    def Update(self):
+    def Update(self, event):
 
-        for ev in pygame.event.get(): 
+        # stores the (x,y) coordinates into 
+        # the variable as a tuple 
+        mouse = pygame.mouse.get_pos() 
+
+        for ev in event: 
 
             if ev.type == pygame.QUIT: 
                 pygame.quit() 
@@ -26,12 +30,9 @@ class Button:
 
                 #if the mouse is clicked on the 
                 # button the game is terminated 
+                print("Clicked")
                 if self.x <= mouse[0] <= self.x+self.w and self.y <= mouse[1] <= self.y+self.h: 
                     self.OnClick()
-
-        # stores the (x,y) coordinates into 
-        # the variable as a tuple 
-        mouse = pygame.mouse.get_pos() 
 
         # if mouse is hovered on a button it 
         # changes to lighter shade  
